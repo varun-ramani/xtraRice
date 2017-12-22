@@ -1,0 +1,34 @@
+#!/bin/zsh
+
+simpleDate() {
+	date +%b/%d/%Y;
+}
+
+dayOfWeek() {
+	date +%A;
+}
+
+time12() {
+	date +%r;
+}
+
+battLevel() {
+	echo "$(cat /sys/class/power_supply/BAT0/capacity)%";
+}
+
+battCharging() {
+	if [ $(cat /sys/class/power_supply/BAT0/status) = "Charging" ]; then
+	echo "CHARGING";
+	else
+	echo "DISCHARGING";
+	fi
+}
+
+volLevel() {
+	if [ $(amixer get Master | awk '/Mono/{print}' | awk '/[.]/' | awk '{print $6}') = '[off]' ]; then
+		echo MUTE
+	else
+		pactl list sinks | gawk "/Volume/{print}" | gawk "/front-left/{print}" | gawk '{print $12}'
+	fi
+}
+$1
